@@ -1,0 +1,19 @@
+# Netlify settings – the website lives in the "public" folder
+[build]
+  publish = "public"
+
+# Pretty links: /e/<event_id> and /preview/<template_id> both open index.html
+[[redirects]]
+  from = "/e/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/preview/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/gallery"
+  to = "/index.html"
+  status = 200
