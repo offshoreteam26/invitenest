@@ -6,7 +6,7 @@
  *   🔄 Refresh RSVP status      → only the status column
  *
  * You type:      event_id, name, mobile
- * System fills:  guest_code, invite_link, whatsapp (📲 Send), status
+ * System fills:  guest_code, invite_link, whatsapp (📲 Send), status, attending, party_size
  *
  * Message used for each guest (most specific wins):
  *   Events.invite_message  →  Templates.invite_message  →  DEFAULT_INVITE_MESSAGE
@@ -51,7 +51,7 @@ function onSelectionChange(e) {
   sheet.getParent().toast(GUEST_HINT, 'Add your first guest', 10);
 }
 
-const GUEST_HINT = 'Type only event_id, name and mobile. guest_code, invite_link, 📲 Send and status fill in automatically.';
+const GUEST_HINT = 'Type only event_id, name and mobile. The other columns (link, 📲 Send, status, attending, party size) fill in automatically.';
 
 function hasGuests_(sheet) {
   const last = sheet.getLastRow();
@@ -82,15 +82,15 @@ function updateGuests_({ buildLinks, firstRow = 2, lastRow = null, quiet = false
 
   rows.forEach((row, i) => {
     const rowNumber = firstRow + i;
-    const clearAuto = () => ['invite_link', 'whatsapp', 'status'].forEach(k => { row[col(k)] = ''; });
+    const clearAuto = () => ['invite_link', 'whatsapp', ...REPLY_COLUMNS].forEach(k => { row[col(k)] = ''; });
     if (!isRecord_(row)) { if (buildLinks) { clearAuto(); row[col('guest_code')] = ''; } return; }
 
     const guest = Object.fromEntries(headers.map((h, j) => [h, row[j]]));
     const mobile = normalizeMobile_(guest.mobile);
     const code = GUEST_CODE_PATTERN.test(String(guest.guest_code)) ? String(guest.guest_code) : '';
-    const isReplied = hasRepliedKey_(replied, guest.event_id, code, mobile);
-    row[col('status')] = isReplied ? GUEST_STATUS.REPLIED : GUEST_STATUS.PENDING;
-    if (isReplied) repliedCount++;
+    const reply = findReply_(replied, guest.event_id, code, mobile);
+    writeReply_(row, col, reply);
+    if (reply) repliedCount++;
     if (!buildLinks) return;
 
     const event = events.get(String(guest.event_id).trim());
@@ -106,7 +106,7 @@ function updateGuests_({ buildLinks, firstRow = 2, lastRow = null, quiet = false
     row[col('mobile')] = mobile;
     row[col('invite_link')] = link;
     row[col('whatsapp')] = SEND_LABEL;
-    row[col('status')] = isReplied ? GUEST_STATUS.REPLIED : GUEST_STATUS.PENDING;
+    writeReply_(row, col, reply);
     sendUrls[i] = `https://wa.me/${mobile}?text=${encodeURIComponent(message)}`;
     ready++;
   });
@@ -119,7 +119,9 @@ function updateGuests_({ buildLinks, firstRow = 2, lastRow = null, quiet = false
     });
     sh.getRange(firstRow, col('whatsapp') + 1, rows.length, 1).setRichTextValues(linkCells);
   } else {
-    sh.getRange(firstRow, col('status') + 1, rows.length, 1).setValues(rows.map(r => [r[col('status')]]));
+    // status, attending, party_size sit side by side → one write
+    sh.getRange(firstRow, col('status') + 1, rows.length, REPLY_COLUMNS.length)
+      .setValues(rows.map(r => REPLY_COLUMNS.map(k => r[col(k)])));
   }
 
   if (quiet) {
@@ -175,16 +177,26 @@ function newGuestCode_(usedCodes) {
   return code;
 }
 
-/** Every (event + guest code) and (event + mobile) that has replied. */
+const REPLY_COLUMNS = ['status', 'attending', 'party_size'];
+
+/** Every reply, findable by (event + guest code) and by (event + mobile) → { attending, party_size }. */
 function repliedKeys_() {
-  const keys = new Set();
+  const replies = new Map();
   Repos.responses().findAll().forEach(r => {
-    if (r.guest_code) keys.add(`${r.event_id}|g|${r.guest_code}`);
+    const attendance = attendanceFrom_(parseJson_(r.answers_json, {}));
+    if (r.guest_code) replies.set(`${r.event_id}|g|${r.guest_code}`, attendance);
     const mobile = normalizeMobile_(r.mobile);
-    if (mobile) keys.add(`${r.event_id}|m|${mobile}`);
+    if (mobile) replies.set(`${r.event_id}|m|${mobile}`, attendance);
   });
-  return keys;
+  return replies;
 }
 
-const hasRepliedKey_ = (keys, eventId, guestCode, mobile) =>
-  Boolean((guestCode && keys.has(`${eventId}|g|${guestCode}`)) || (mobile && keys.has(`${eventId}|m|${mobile}`)));
+const findReply_ = (replies, eventId, guestCode, mobile) =>
+  (guestCode && replies.get(`${eventId}|g|${guestCode}`)) || (mobile && replies.get(`${eventId}|m|${mobile}`)) || null;
+
+/** status + attending + party_size for one Guests row. */
+function writeReply_(row, col, reply) {
+  row[col('status')] = reply ? GUEST_STATUS.REPLIED : GUEST_STATUS.PENDING;
+  row[col('attending')] = reply ? reply.attending : '';
+  row[col('party_size')] = reply ? reply.party_size : '';
+}

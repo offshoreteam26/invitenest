@@ -6,7 +6,7 @@
 import { el } from '../dom.js';
 import { buildInput } from './fields.js';
 
-const SUBMIT_LABEL = 'Send RSVP';
+const SUBMIT_LABEL = 'Submit';
 const labelText = f => f.label + (f.required ? ' *' : '');
 
 function fieldRow(f, errorEl) {
@@ -39,7 +39,7 @@ export function buildForm(fields, onSubmit, initial = {}) {
 
   const form = el('form', { class: 'rsvp', novalidate: true },
     el('h2', { class: 'display' }, 'Kindly reply'),
-    el('p', { class: 'meta' }, '* required'),
+    el('p', { class: 'meta' }, 'Fields marked * are required'),
     fields.map(f => fieldRow(f, errorFor[f.key])),
     formError,
     button);
@@ -50,7 +50,7 @@ export function buildForm(fields, onSubmit, initial = {}) {
     Object.values(errorFor).forEach(p => { p.textContent = ''; });
     formError.textContent = '';
     button.disabled = true;
-    button.textContent = 'Sending…';
+    button.textContent = 'Submitting…';
     try {
       await onSubmit(readAnswers(form, fields));
     } catch (err) {

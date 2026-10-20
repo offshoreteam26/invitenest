@@ -11,7 +11,7 @@ const SCHEMA = Object.freeze({
   Events:    ['event_id', 'template_id', 'status', 'title', 'hosts', 'date', 'time', 'venue',
               'map_url', 'photos', 'music_url', 'rsvp_deadline', 'theme_override_json', 'invite_message'],
   Fields:    ['event_id', 'field_key', 'label', 'type', 'required', 'options', 'min', 'max', 'order', 'secret'],
-  Guests:    ['event_id', 'guest_code', 'name', 'mobile', 'invite_link', 'whatsapp', 'status'],
+  Guests:    ['event_id', 'guest_code', 'name', 'mobile', 'invite_link', 'whatsapp', 'status', 'attending', 'party_size'],
   Responses: ['submitted_at', 'event_id', 'response_id', 'name', 'mobile', 'answers_json', 'guest_code']
 });
 const TABS = Object.freeze(Object.fromEntries(Object.keys(SCHEMA).map(k => [k.toUpperCase(), k])));
@@ -65,6 +65,8 @@ const COLUMN_INFO = Object.freeze({
   mobile:        [150, 'Mobile number. Any format works: 0501234567, +91 96187 78056 …'],
   invite_link:   [330, 'Personal invitation link (filled automatically)'],
   whatsapp:      [110, 'Click 📲 Send to open WhatsApp with the message ready (filled automatically)'],
+  attending:     [100, 'Yes / No from the guest\'s reply (filled automatically)'],
+  party_size:    [100, 'How many people are coming, from the guest\'s reply (filled automatically)'],
   submitted_at:  [170, 'When the guest replied (filled automatically)'],
   response_id:   [280, 'Unique id of the reply (filled automatically)'],
   answers_json:  [420, 'All answers of this guest (filled automatically)']
@@ -81,7 +83,7 @@ const COLUMN_FORMATS = [
 
 // columns only the system writes: typing in them shows a warning (the system still writes freely)
 const AUTO_COLUMNS = Object.freeze({
-  Guests:    ['guest_code', 'invite_link', 'whatsapp', 'status'],
+  Guests:    ['guest_code', 'invite_link', 'whatsapp', 'status', 'attending', 'party_size'],
   Responses: SCHEMA.Responses
 });
 const AUTO_PROTECTION_NOTE = 'InviteNest: filled automatically';

@@ -1,6 +1,6 @@
-/* Bathukamma Bloom – seven flower tiers stack up on a brass plate, then the RSVP opens. */
+/* Bathukamma Bloom – seven flower tiers stack up on a brass plate, then the reply form opens. */
 import { el } from '../dom.js';
-import { eventDetails, greetingLine, openButton } from './shared.js';
+import { invitationPage, openButton } from './shared.js';
 
 // top → bottom: flower colour + darker edge (tangedu, gunuka, celosia …)
 const TIERS = Object.freeze([
@@ -29,23 +29,19 @@ export const bathukamma = {
 
   render(root, event, { onOpen, greeting }) {
     const stack = el('div', { class: 'bk-stack', 'aria-hidden': 'true' },
+      el('div', { class: 'bk-glow' }),
       el('div', { class: 'bk-gauri' }),
       TIERS.map(tier),
       el('div', { class: 'bk-plate' }));
 
-    root.append(
-      el('section', { class: 'invite' },
-        greetingLine(greeting),
-        el('p', { class: 'eyebrow' }, 'You are invited'),
-        stack,
-        el('h1', { class: 'display' }, event.title),
-        el('p', { class: 'subtitle' }, event.hosts),
-        eventDetails(event),
-        openButton('Tap to see it bloom', {
-          animate: () => stack.classList.add('is-open'),
-          onOpen,
-          delayMs: 1900
-        }))
-    );
+    root.append(invitationPage({
+      greeting,
+      eyebrow: 'You are invited',
+      art: stack,
+      title: event.title,
+      subtitle: event.hosts,
+      event,
+      button: openButton({ animate: () => stack.classList.add('is-open'), onOpen, delayMs: 1900 })
+    }));
   }
 };

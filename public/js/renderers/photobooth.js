@@ -1,6 +1,6 @@
-/* Photobooth – a photo strip slides down out of the booth, then the RSVP opens. */
+/* Photobooth – a photo strip slides down out of the booth, then the reply form opens. */
 import { el } from '../dom.js';
-import { eventDetails, greetingLine, openButton } from './shared.js';
+import { invitationPage, openButton } from './shared.js';
 
 const PHOTO_COUNT = 3;
 
@@ -13,19 +13,18 @@ export const photobooth = {
       : el('div', { class: 'pb-photo pb-photo-empty' }));
 
     const strip = el('div', { class: 'pb-strip' }, photos, el('p', { class: 'pb-caption' }, event.hosts));
+    const booth = el('div', { class: 'pb-booth', 'aria-hidden': 'true' },
+      el('div', { class: 'pb-slot' }),
+      el('div', { class: 'pb-window' }, strip),
+      el('div', { class: 'pb-label' }, 'PHOTO BOOTH'));
 
-    root.append(
-      el('section', { class: 'invite' },
-        greetingLine(greeting),
-        el('p', { class: 'eyebrow' }, event.title),
-        el('div', { class: 'pb-booth' }, el('div', { class: 'pb-slot' }), el('div', { class: 'pb-window' }, strip)),
-        el('h1', { class: 'display' }, event.hosts),
-        eventDetails(event),
-        openButton('Tap to develop the photos', {
-          animate: () => strip.classList.add('is-open'),
-          onOpen,
-          delayMs: 1600
-        }))
-    );
+    root.append(invitationPage({
+      greeting,
+      eyebrow: event.title,
+      art: booth,
+      title: event.hosts,
+      event,
+      button: openButton({ animate: () => strip.classList.add('is-open'), onOpen, delayMs: 1600 })
+    }));
   }
 };

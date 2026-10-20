@@ -25,7 +25,7 @@ Edit in Apps Script, save, test in the editor, then
 **Deploy → Manage deployments → ✏️ → New version → Deploy**, and copy the changed file into `backend/` here.
 
 ## Add a new design
-1. Create `public/js/renderers/<name>.js` (same `render(root, event, { onOpen, greeting })` contract).
+1. Create `public/js/renderers/<name>.js` (same `render(root, event, { onOpen, greeting })` contract – see bathukamma, photobooth, envelope, modern).
 2. Add one line to `RENDERERS` in `public/js/renderers/registry.js`.
 3. Add its CSS to `public/css/base.css`.
 4. Add a Templates row in the Sheet with `renderer` = `<name>`.

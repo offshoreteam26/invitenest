@@ -8,14 +8,15 @@ import { getRenderer } from './renderers/registry.js';
 import { buildForm } from './form/form-builder.js';
 import { renderGallery } from './gallery.js';
 import { resolveRoute } from './router.js';
-import { el } from './dom.js';
+import { el, icon } from './dom.js';
 
 const root = document.getElementById('app');
 const DEFAULT_GREETING = 'Dear {NAME}';
 
-function showMessage(title, text) {
+function showMessage(title, text, iconName) {
   root.replaceChildren(
     el('section', { class: 'message' },
+      iconName ? el('div', { class: 'message-icon' }, icon(iconName)) : null,
       el('h1', { class: 'display' }, title),
       text ? el('p', { class: 'meta' }, text) : null));
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -43,7 +44,8 @@ function showInvitation({ event, template, fields, guest }, { isPreview, guestCo
         if (!isPreview) await Api.submitRsvp(event.event_id, answers, guestCode);
         showMessage(
           isPreview ? 'Preview only' : 'Thank you!',
-          isPreview ? 'This is a design preview, nothing was saved.' : 'Your reply has been saved. We look forward to seeing you!');
+          isPreview ? 'This is a design preview, nothing was saved.' : 'Your reply has been saved. We look forward to seeing you!',
+          'check');
       }, initial);
       root.append(form);
       form.scrollIntoView({ behavior: 'smooth', block: 'start' });

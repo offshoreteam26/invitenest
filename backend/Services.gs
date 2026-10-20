@@ -76,6 +76,20 @@ const FieldService = {
   }
 };
 
+/* ---------- Attendance (one rule, used by RSVP save and the Guests tab) ---------- */
+const ATTENDING_KEY = 'attending';                       // field_key of the "Will you attend?" question
+const PARTY_KEYS = ['adults', 'children', 'guests'];     // numbers that add up to the party size
+const NOT_ATTENDING = /^(no|sadly|regret|decline|can't|cannot)/i;
+
+/** answers → { attending: 'Yes' | 'No', party_size: number } */
+function attendanceFrom_(answers) {
+  const coming = !(ATTENDING_KEY in answers) || !NOT_ATTENDING.test(String(answers[ATTENDING_KEY]).trim());
+  if (!coming) return { attending: 'No', party_size: 0 };
+  const counted = PARTY_KEYS.filter(k => k in answers && answers[k] !== '');
+  const size = counted.reduce((sum, k) => sum + (Number(answers[k]) || 0), 0);
+  return { attending: 'Yes', party_size: counted.length ? size : 1 };
+}
+
 /* ---------- Guests (personal WhatsApp invitations) ---------- */
 const GuestService = {
   /** The guest behind a personal link, or null when the code is missing or wrong. */
@@ -90,11 +104,11 @@ const GuestService = {
     return guest ? { name: String(guest.name).trim() } : null;
   },
 
-  markReplied(eventId, guestCode, mobile) {
+  markReplied(eventId, guestCode, mobile, attendance) {
     Repos.guests().update(g => String(g.event_id) === String(eventId) && (
       (guestCode && String(g.guest_code) === String(guestCode)) ||
       (mobile && normalizeMobile_(g.mobile) === mobile)
-    ), { status: GUEST_STATUS.REPLIED });
+    ), { status: GUEST_STATUS.REPLIED, ...attendance });
   }
 };
 
@@ -162,7 +176,7 @@ const ResponseService = {
         answers_json: JSON.stringify(clean),
         guest_code: code
       });
-      GuestService.markReplied(eventId, code, mobile);
+      GuestService.markReplied(eventId, code, mobile, attendanceFrom_(clean));
     } finally {
       lock.releaseLock();
     }
