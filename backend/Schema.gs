@@ -35,7 +35,7 @@ const STYLE = Object.freeze({
 const COLUMN_INFO = Object.freeze({
   template_id:   [170, 'Short unique id, no spaces. Example: photobooth-navy'],
   name:          [190, 'Templates: design name. Guests / Responses: guest name'],
-  renderer:      [130, 'Drawing code to use: photobooth or bathukamma'],
+  renderer:      [130, 'Design code to use: bathukamma, photobooth, envelope, doors or modern'],
   theme_json:    [380, 'Colours and fonts as JSON. Example: {"bg":"#1E2A44","accent":"#E3C88A"}'],
   preview_image: [200, 'Optional image link shown in the template gallery'],
   active:        [80,  'TRUE = usable, FALSE = hidden'],

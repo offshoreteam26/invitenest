@@ -12,8 +12,9 @@ import { photobooth } from './photobooth.js';
 import { bathukamma } from './bathukamma.js';
 import { envelope } from './envelope.js';
 import { modern } from './modern.js';
+import { doors } from './doors.js';
 
-const RENDERERS = Object.freeze({ photobooth, bathukamma, envelope, modern });
+const RENDERERS = Object.freeze({ photobooth, bathukamma, envelope, modern, doors });
 
 export function getRenderer(key) {
   const renderer = RENDERERS[key];

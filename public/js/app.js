@@ -9,6 +9,7 @@ import { buildForm } from './form/form-builder.js';
 import { renderGallery } from './gallery.js';
 import { resolveRoute } from './router.js';
 import { el, icon } from './dom.js';
+import { createMusic } from './music.js';
 
 const root = document.getElementById('app');
 const DEFAULT_GREETING = 'Dear {NAME}';
@@ -33,6 +34,13 @@ function showInvitation({ event, template, fields, guest }, { isPreview, guestCo
   applyTheme(template.theme);
   document.title = `${event.title} – ${event.hosts}`;
   root.replaceChildren();
+
+  // music: the event's song, or the design's built-in chimes; starts when "Open invitation" is tapped
+  const music = createMusic({ url: event.music_url, mode: template.theme.music });
+  if (music) {
+    document.body.append(music.button);
+    root.addEventListener('click', e => { if (e.target.closest('.btn-open')) music.start(); });
+  }
 
   const renderer = getRenderer(template.renderer);
   renderer.render(root, event, {
