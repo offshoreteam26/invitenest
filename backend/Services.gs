@@ -71,6 +71,16 @@ const FieldService = {
       .sort((a, b) => a.order - b.order);
   },
 
+  /**
+   * The questions for one visitor. A guest from a personal WhatsApp link is already verified
+   * by their guest code, so secret questions (the venue code) are skipped for them;
+   * public visitors (e.g. walk-ins scanning the venue poster) still answer them.
+   */
+  forVisitor(eventId, guest) {
+    const fields = this.forEvent(eventId);
+    return guest ? fields.filter(f => !f.secret) : fields;
+  },
+
   /** What the browser may see: secret answers (the venue code) are removed. */
   publicView({ secret, ...field }) {
     return secret ? { ...field, options: [] } : field;
@@ -125,11 +135,12 @@ const EventService = {
     const row = this.getLive(eventId);
     const template = TemplateService.get(row.template_id);
     template.theme = { ...template.theme, ...parseJson_(row.theme_override_json, {}) };
+    const guest = GuestService.find(eventId, guestCode);
     return {
       event: toPublicEvent_(row),
       template,
-      fields: FieldService.forEvent(eventId).map(FieldService.publicView),
-      guest: GuestService.publicView(GuestService.find(eventId, guestCode))
+      fields: FieldService.forVisitor(eventId, guest).map(FieldService.publicView),
+      guest: GuestService.publicView(guest)
     };
   },
 
@@ -152,15 +163,15 @@ const ResponseService = {
     }
     this.checkRateLimit_(eventId);
 
-    const fields = FieldService.forEvent(eventId);
+    const guest = GuestService.find(eventId, guestCode);
+    const code = guest ? String(guest.guest_code) : '';
+    const fields = FieldService.forVisitor(eventId, guest);   // personal-link guests skip the venue code
     const errors = validateAnswers_(fields, answers);
     if (Object.keys(errors).length) throw new AppError(422, 'Please fix the highlighted fields', errors);
 
     // keep only known, non-secret answers (the venue code is checked, never stored)
     const clean = Object.fromEntries(fields.filter(f => !f.secret).map(f => [f.key, answers[f.key] ?? '']));
     const mobile = clean.mobile ? normalizeMobile_(clean.mobile) : '';
-    const guest = GuestService.find(eventId, guestCode);
-    const code = guest ? String(guest.guest_code) : '';
 
     const lock = LockService.getScriptLock();
     lock.waitLock(10000);                                // checks + writes happen one guest at a time
