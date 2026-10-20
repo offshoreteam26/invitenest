@@ -10,6 +10,7 @@ import { renderGallery } from './gallery.js';
 import { resolveRoute } from './router.js';
 import { el, icon } from './dom.js';
 import { createMusic } from './music.js';
+import { resolveAsset } from './assets.js';
 
 const root = document.getElementById('app');
 const DEFAULT_GREETING = 'Dear {NAME}';
@@ -35,8 +36,12 @@ function showInvitation({ event, template, fields, guest }, { isPreview, guestCo
   document.title = `${event.title} – ${event.hosts}`;
   root.replaceChildren();
 
-  // music: the event's song, or the design's built-in chimes; starts when "Open invitation" is tapped
-  const music = createMusic({ url: event.music_url, mode: template.theme.music });
+  // files from the Sheet may be short paths (images/…, music/…) – turn them into full addresses once, here
+  event.photos = event.photos.map(resolveAsset).filter(Boolean);
+
+  // music: the event's own song → the design's song → the design's built-in chimes; starts on "Open invitation"
+  const song = resolveAsset(event.music_url || template.music || template.theme.music);
+  const music = createMusic(song === 'chimes' ? { mode: 'chimes' } : { url: song });
   if (music) {
     document.body.append(music.button);
     root.addEventListener('click', e => { if (e.target.closest('.btn-open')) music.start(); });

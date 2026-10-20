@@ -17,7 +17,8 @@ const toTemplate_ = r => ({
   name: r.name,
   renderer: r.renderer,
   theme: parseJson_(r.theme_json, {}),
-  previewImage: r.preview_image
+  previewImage: String(r.preview_image || '').trim(),
+  music: String(r.music || '').trim()
 });
 
 const toField_ = r => ({

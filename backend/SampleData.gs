@@ -21,7 +21,7 @@ const SAMPLE_DATA = Object.freeze({
   /* ------------------------------ DESIGNS ------------------------------ */
   Templates: [
     {
-      template_id: 'bathukamma-bloom', name: 'Bathukamma Bloom', renderer: 'bathukamma', active: 'TRUE',
+      template_id: 'bathukamma-bloom', music: 'music/festival-bells.mp3', name: 'Bathukamma Bloom', renderer: 'bathukamma', active: 'TRUE',
       theme_json: '{"bg":"#4A1336","ink":"#FFF6E5","accent":"#F4C430","on_accent":"#4A1336","font_display":"Cormorant Garamond","font_body":"Jost"}',
       invite_message: msg_([
         'Namaskaram {NAME} garu 🌸', '',
@@ -31,7 +31,7 @@ const SAMPLE_DATA = Object.freeze({
         'బతుకమ్మ శుభాకాంక్షలు!'])
     },
     {
-      template_id: 'photobooth-navy', name: 'Photobooth Navy', renderer: 'photobooth', active: 'TRUE', preview_image: PHOTOS.couplePose,
+      template_id: 'photobooth-navy', music: 'music/romantic-keys.mp3', name: 'Photobooth Navy', renderer: 'photobooth', active: 'TRUE', preview_image: PHOTOS.couplePose,
       theme_json: '{"bg":"#1E2A44","ink":"#F6F1E7","accent":"#E3C88A","on_accent":"#1E2A44","font_display":"Cormorant Garamond","font_body":"Jost"}',
       invite_message: msg_([
         'Dear {NAME},', '',
@@ -41,7 +41,7 @@ const SAMPLE_DATA = Object.freeze({
         'With love,', '{HOSTS}'])
     },
     {
-      template_id: 'envelope-blush', name: 'Envelope Blush (wedding)', renderer: 'envelope', active: 'TRUE', preview_image: PHOTOS.henna,
+      template_id: 'envelope-blush', music: 'music/wedding-harp.mp3', name: 'Envelope Blush (wedding)', renderer: 'envelope', active: 'TRUE', preview_image: PHOTOS.henna,
       theme_json: '{"bg":"#F6ECE9","ink":"#3A2A2C","accent":"#B5646F","on_accent":"#FFFFFF","seal":"#7A2E3A","font_display":"Cormorant Garamond","font_body":"Jost"}',
       invite_message: msg_([
         'Dear {NAME},', '',
@@ -51,8 +51,8 @@ const SAMPLE_DATA = Object.freeze({
         'With love and blessings 💐'])
     },
     {
-      template_id: 'royal-doors', name: 'Royal Doors (wedding)', renderer: 'doors', active: 'TRUE', preview_image: PHOTOS.coupleRed,
-      theme_json: '{"bg":"#2A0A12","ink":"#FFF4E0","accent":"#D4A64A","on_accent":"#2A0A12","door":"#7A1E2C","music":"chimes","font_display":"Cormorant Garamond","font_body":"Jost"}',
+      template_id: 'royal-doors', music: 'music/royal-veena.mp3', name: 'Royal Doors (wedding)', renderer: 'doors', active: 'TRUE', preview_image: PHOTOS.coupleRed,
+      theme_json: '{"bg":"#2A0A12","ink":"#FFF4E0","accent":"#D4A64A","on_accent":"#2A0A12","door":"#7A1E2C","font_display":"Cormorant Garamond","font_body":"Jost"}',
       invite_message: msg_([
         'Dear {NAME},', '',
         'With the blessings of our elders, *{HOSTS}* joyfully invite you to their wedding.', '',
@@ -61,7 +61,7 @@ const SAMPLE_DATA = Object.freeze({
         'Your presence will make our day complete 🙏'])
     },
     {
-      template_id: 'modern-birthday', name: 'Modern Pop (birthday)', renderer: 'modern', active: 'TRUE',
+      template_id: 'modern-birthday', music: 'music/party-pop.mp3', name: 'Modern Pop (birthday)', renderer: 'modern', active: 'TRUE',
       theme_json: '{"bg":"#FFF8F0","ink":"#1F1A2E","accent":"#FF6B4A","accent2":"#3D5AFE","accent3":"#FFC23C","on_accent":"#FFFFFF","font_display":"Space Grotesk","font_body":"Inter"}',
       invite_message: msg_([
         'Hi {NAME}! 🎉', '',
@@ -71,7 +71,7 @@ const SAMPLE_DATA = Object.freeze({
         'See you there! 🎈', '{HOSTS}'])
     },
     {
-      template_id: 'modern-corporate', name: 'Modern Night (corporate)', renderer: 'modern', active: 'TRUE',
+      template_id: 'modern-corporate', music: 'music/corporate-ambient.mp3', name: 'Modern Night (corporate)', renderer: 'modern', active: 'TRUE',
       theme_json: '{"bg":"#0E1726","ink":"#EAF2FF","accent":"#2DD4BF","accent2":"#6366F1","accent3":"#F59E0B","on_accent":"#0E1726","font_display":"Space Grotesk","font_body":"Inter"}',
       invite_message: msg_([
         'Dear {NAME},', '',

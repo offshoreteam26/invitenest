@@ -33,5 +33,20 @@ Edit in Apps Script, save, test in the editor, then
 ## Photo credits
 Sample photos are from [Unsplash](https://unsplash.com/license) (free to use). Replace them with your own event photos.
 
-## Music
-Set `music_url` on an event to a direct `.mp3` link (for example a file in `public/music/`), or add `"music":"chimes"` to a template theme for the built-in bell melody.
+## Music and photos (short paths in the Sheet)
+Files inside `public/` can be used in the Sheet with a short path:
+
+| Put the file in | Write in the Sheet |
+|---|---|
+| `public/music/our-song.mp3` | `music/our-song.mp3` (Templates `music` or Events `music_url`) |
+| `public/images/meera-arjun/1.jpg` | `images/meera-arjun/1.jpg` (Events `photos`, comma-separated) |
+| `public/images/previews/royal.jpg` | `images/previews/royal.jpg` (Templates `preview_image`) |
+
+Full `https://` links also work. Then `git add . && git commit -m "Add files" && git push`.
+
+Music priority: event `music_url` → template `music` → `"music":"chimes"` in the theme (built-in bells).
+The six tracks in `public/music/` are original compositions made for InviteNest (free to use):
+festival-bells, wedding-harp, royal-veena, romantic-keys, party-pop, corporate-ambient.
+
+Keep photos under ~300 KB each (resize to about 1200 px wide) so invitations open fast on mobile.
+

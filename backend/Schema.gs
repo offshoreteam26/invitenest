@@ -7,7 +7,7 @@
 
 /* ---------- SCHEMA: tabs and columns (single source of truth) ---------- */
 const SCHEMA = Object.freeze({
-  Templates: ['template_id', 'name', 'renderer', 'theme_json', 'preview_image', 'active', 'invite_message'],
+  Templates: ['template_id', 'name', 'renderer', 'theme_json', 'preview_image', 'active', 'invite_message', 'music'],
   Events:    ['event_id', 'template_id', 'status', 'title', 'hosts', 'date', 'time', 'venue',
               'map_url', 'photos', 'music_url', 'rsvp_deadline', 'theme_override_json', 'invite_message'],
   Fields:    ['event_id', 'field_key', 'label', 'type', 'required', 'options', 'min', 'max', 'order', 'secret'],
@@ -37,7 +37,8 @@ const COLUMN_INFO = Object.freeze({
   name:          [190, 'Templates: design name. Guests / Responses: guest name'],
   renderer:      [130, 'Design code to use: bathukamma, photobooth, envelope, doors or modern'],
   theme_json:    [380, 'Colours and fonts as JSON. Example: {"bg":"#1E2A44","accent":"#E3C88A"}'],
-  preview_image: [200, 'Optional image link shown in the template gallery'],
+  preview_image: [200, 'Gallery picture: a path like images/previews/royal.jpg (file in the website) or a full https:// link'],
+  music:         [200, 'Background music for this design: music/wedding-harp.mp3 (file in the website), a full https:// link, or chimes'],
   active:        [80,  'TRUE = usable, FALSE = hidden'],
   invite_message:[320, 'WhatsApp message. Placeholders: {NAME} {HOSTS} {TITLE} {DATE} {TIME} {VENUE} {LINK}. In Events: optional, overrides the template message'],
   event_id:      [170, 'Short unique id, no spaces. Becomes the link /e/<event_id>. In Fields, * = all events'],
@@ -48,8 +49,8 @@ const COLUMN_INFO = Object.freeze({
   time:          [100, 'Event time as text, e.g. 7:00 PM'],
   venue:         [230, 'Venue name and city'],
   map_url:       [200, 'Optional Google Maps link'],
-  photos:        [230, 'Optional image links separated by commas'],
-  music_url:     [180, 'Optional background music link'],
+  photos:        [230, 'Photos separated by commas: images/meera-arjun/1.jpg, images/meera-arjun/2.jpg (or full https:// links)'],
+  music_url:     [180, 'Optional song for this event only (overrides the design music): music/our-song.mp3 or a full https:// link'],
   rsvp_deadline: [130, 'Last date guests can reply'],
   theme_override_json: [250, 'Optional colour changes for this event only. Example: {"accent":"#D4537E"}'],
   field_key:     [130, 'Internal name, no spaces. Example: name, mobile, adults'],

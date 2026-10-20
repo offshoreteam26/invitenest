@@ -1,5 +1,6 @@
 /* gallery.js – lists every active design; tapping one opens its preview. */
 import { el } from './dom.js';
+import { resolveAsset } from './assets.js';
 
 /** A designed colour card for templates without a preview photo. */
 function swatchStyle({ bg = '#333', accent = '#999', accent2 = accent }) {
@@ -10,7 +11,7 @@ function swatchStyle({ bg = '#333', accent = '#999', accent2 = accent }) {
 
 function thumbnail(t) {
   return t.previewImage
-    ? el('img', { class: 'gallery-image', src: t.previewImage, alt: '', loading: 'lazy' })
+    ? el('img', { class: 'gallery-image', src: resolveAsset(t.previewImage), alt: '', loading: 'lazy' })
     : el('span', { class: 'swatch', style: swatchStyle(t.theme) });
 }
 
